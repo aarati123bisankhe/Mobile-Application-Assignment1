@@ -42,6 +42,6 @@ abstract class BankAccount {
     }
   }
 
-  //bbstract withdraw method/must be defined in child classes.
+  //abstract withdraw method/must be defined in child classes.
   void withdraw(double amount);
 }
