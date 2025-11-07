@@ -1,0 +1,47 @@
+import 'bank_account.dart';
+import 'interest_bearing.dart';
+
+//the bank class manages all accounts / creation, transfers, interest, reports
+class Bank {
+  final List<BankAccount> _accounts = []; //stores all accounts in a list
+
+  void addAccount(BankAccount account) => _accounts.add(account); 
+  //adds an account (any type) to the bank’s system
+
+  BankAccount? findAccount(int number) => 
+      _accounts.firstWhere((acc) => acc.accountNumber == number, 
+      orElse: () => null as BankAccount);
+  //searches for account by account number
+
+  void transfer(int from, int to, double amount) {
+    var sender = findAccount(from); //find sender account
+    var receiver = findAccount(to); //find receiver account
+
+    if (sender == null || receiver == null) {
+      print("Invalid account number(s)."); //handle wrong inputs.
+      return;
+    }
+
+    sender.withdraw(amount); //deduct from sender.
+    receiver.deposit(amount); //add to receiver.
+    print("Transferred \$${amount.toStringAsFixed(2)} "
+        "from ${sender.holderName} to ${receiver.holderName}."); //notify user
+  }
+
+  void applyMonthlyInterest() {
+    for (var acc in _accounts) {
+      if (acc is InterestBearing) { //only for accounts that earn interest
+        double interest = acc.calculateInterest(); //compute interest
+        acc.deposit(interest); //add to account
+        print("Interest of \$${interest.toStringAsFixed(2)} added to ${acc.holderName}");
+      }
+    }
+  }
+
+  void showAllAccounts() {
+    for (var acc in _accounts) {
+      acc.displayInfo(); //print details
+      print("----------------------------");
+    }
+  }
+}
